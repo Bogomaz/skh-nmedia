@@ -65,7 +65,7 @@ object PostService {
     // Принимает id пользователя и id поста.
     // Cтавит отметку о том, что данный пользователь поставил/снял лайк
     // Возвращает новое количество лайков
-    fun sharesHandler(postId: Int) {
+    fun repostHandler(postId: Int) {
         val post = getById(postId)
         post.reposts!!.count += 1
     }
@@ -84,11 +84,11 @@ object PostService {
     // Принимает число и суффикс, указывающий на размерность числа
     // Возвращает строку с нужным числом знаков после запятой и заданным суффиксом
     private fun formatNumberWithSuffix(value: Double, suffix: String): String {
-        // Отрезаем лишние цифры без округления
+        // Отрезать лишние цифры без округления
         val truncated = (value * 10).toInt() / 10.0
         val formatted = "%.1f".format(truncated).replace(",", ".")
 
-        // Убираем .0, если число целое
+        // Убрать .0, если число целое
         return if (formatted.endsWith(".0")) {
             formatted.dropLast(2) + " $suffix"
         } else {

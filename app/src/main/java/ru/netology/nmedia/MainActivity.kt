@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity() {
             likes.setImageResource(
                 selectImageResource(testPost.likes!!.userLikes)
             )
+
             // Клик по сердечку
             likes.setOnClickListener {
                 PostService.likeHandler(testAuthor.id, testPost.id)
@@ -103,11 +104,11 @@ class MainActivity : AppCompatActivity() {
                     selectImageResource(testPost.likes!!.userLikes)
                 )
                 likesCount.text = PostService.convertNumberIntoText(testPost.likes!!.count)
-                Toast.makeText(this@MainActivity, "Лайк изменён.", Toast.LENGTH_SHORT).show()
             }
+
             // Клик по репосту
             shares.setOnClickListener {
-                PostService.sharesHandler(testPost.id)
+                PostService.repostHandler(testPost.id)
                 sharesCount.text = PostService.convertNumberIntoText(testPost.reposts!!.count)
                 Toast.makeText(this@MainActivity, "Вы успешно поделились постом. Стало ${testPost.reposts!!.count}", Toast.LENGTH_SHORT).show()
             }
@@ -115,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    // Конвертируем и форматируем UnixTime в строку с датой и временем публикации
+    // Конвертирует и форматирует UnixTime в строку с датой и временем публикации
     @RequiresApi(Build.VERSION_CODES.O)
     fun formatUnixTime(unixDateTime: Int): String {
         val instant = Instant.ofEpochSecond(unixDateTime.toLong())
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         return formatter.format(instant)
     }
 
-    // Определяем, какая иконка будет выводиться.
+    // Определяет, какая иконка будет выводиться.
     fun selectImageResource(isLiked: Boolean): Int {
         return when (isLiked) {
             true -> R.drawable.cards_heart
