@@ -1,26 +1,30 @@
 package ru.netology.nmedia.service
 
-import ru.netology.nmedia.R
-import ru.netology.nmedia.model.Comment
-import ru.netology.nmedia.model.Likes
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.model.Reposts
-import kotlin.math.round
 
 object PostService {
     var posts = emptyArray<Post>()
     private var currentPostId = 1
 
-    private var comments = emptyArray<Comment>()
-    private var currentCommentId = 1
 
     //Принимает объект Post
     //Добавляет пост
     //Возвращает только что добавленный пост
-    fun add(post: Post): Post {
+    fun addOnePost(post: Post): Post {
         val newPost = post.copy(id = currentPostId++)
         posts += newPost
         return posts.last();
+    }
+
+    //Принимает список постов
+    //Добавляет эти посты
+    //Возвращает количество добавленных постов.
+    fun addPostList(newPostsList: List<Post>): List<Post> {
+        val postsToAdd = newPostsList.map { post ->
+            post.copy(id = currentPostId++)
+        }
+        posts += postsToAdd
+        return postsToAdd;
     }
 
     //Принимает id поста
@@ -52,20 +56,16 @@ object PostService {
         currentPostId = 1
     }
 
-    // Принимает id пользователя и id поста.
-    // Cтавит отметку о том, что данный пользователь поставил/снял лайк
+    // Принимает id поста.
+    // Изменяет лайк и меняет состояние "лайкнутости"
     // Возвращает новое количество лайков
-    fun likeHandler(userId: Int, postId: Int): Post{
+    fun likeHandler(postId: Int): Post {
         val post = getById(postId)
-        val updatedLikes = post.likes?.let{
-            Likes(
-                userLikes = !it.userLikes,
-                count = if (it.userLikes) it.count-1 else it.count+1
-            )
-        }
-        val updatedPost = post.copy(likes = updatedLikes)
+        val updatedPost = post.copy(
+            likesCount = if (post.isLiked) post.likesCount - 1 else post.likesCount + 1,
+            isLiked = !post.isLiked
+        )
         update(updatedPost)
-
         return updatedPost
     }
 
@@ -74,12 +74,9 @@ object PostService {
     // Возвращает новое количество лайков
     fun repostHandler(postId: Int): Post {
         val post = getById(postId)
-        val updatedReposts = post.reposts?.let{
-            Reposts(
-                count = it.count+1
-            )
-        }
-        val updatedPost = post.copy(reposts = updatedReposts)
+        val updatedPost = post.copy(
+            repostsCount = post.repostsCount + 1,
+        )
         update(updatedPost)
         return updatedPost
     }
