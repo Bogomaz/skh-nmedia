@@ -90,7 +90,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content_bottom_br"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/heart_outline_24" />
+        app:srcCompat="@drawable/ic_like" />
 
     <TextView
         android:id="@+id/likes_count"
@@ -163,7 +163,7 @@
         app:layout_constraintStart_toEndOf="@id/comments_count"
         app:layout_constraintTop_toBottomOf="@id/content_bottom_br"
         app:layout_constraintEnd_toStartOf="@id/views_count"
-        app:srcCompat="@drawable/eye"/>
+        app:srcCompat="@drawable/ic_eye"/>
 
     <TextView
         android:id="@+id/views_count"

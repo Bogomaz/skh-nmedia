@@ -3,9 +3,8 @@ package ru.netology.nmedia.service
 import ru.netology.nmedia.model.Post
 
 object PostService {
-    var posts = emptyArray<Post>()
+    var posts = mutableListOf<Post>()
     private var currentPostId = 1
-
 
     //Принимает объект Post
     //Добавляет пост
@@ -40,19 +39,29 @@ object PostService {
     //Принимает объект Post
     //Находит в массиве запись с тем же id, что и у post и обновляет все свойства;
     //Если пост с таким id не найден, то ничего не происходит и возвращается false, в противном случае – возвращается true.
-    fun update(post: Post): Boolean {
-        for ((index, currentPost) in posts.withIndex()) {
-            if (currentPost.id == post.id) {
-                posts[index] = post.copy(id = currentPost.id)
-                println(posts[index])
-                return true
-            }
+    fun update(post: Post): Post {
+        val index = posts.indexOfFirst{it.id == post.id}
+        return if(index == -1){
+            throw RuntimeException("The post ${post.id} doesn't exist")
+        }else{
+            posts[index] = post
+            posts[index]
         }
-        return false
     }
 
+    //Принимает пост по id
+    //Возвращает true, если удаление прошло успешно
+    fun removeById(postId: Int): Boolean {
+        val removed = posts.removeIf { it.id == postId }
+        if (!removed) {
+            throw RuntimeException("The post $postId doesn't exist")
+        }
+        return removed
+    }
+
+
     fun clear() {
-        posts = emptyArray()
+        posts.clear()
         currentPostId = 1
     }
 

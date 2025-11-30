@@ -9,6 +9,7 @@ import ru.netology.nmedia.service.PostService
 class PostRepositoryInMemoy : PostRepository {
     // пользователь-заглушка
     val userId = 1
+
     // набор постов-заглушек
     private val posts = PostService.addPostList(
         listOf(
@@ -104,8 +105,8 @@ class PostRepositoryInMemoy : PostRepository {
     // Изменяет LiveData
     override fun likeById(id: Int) {
         var currentPostsSet = data.value ?: return
-        currentPostsSet = currentPostsSet.map{
-            if(it.id != id) it
+        currentPostsSet = currentPostsSet.map {
+            if (it.id != id) it
             else
                 PostService.likeHandler(it.id)
         }
@@ -114,15 +115,36 @@ class PostRepositoryInMemoy : PostRepository {
 
     // Получает список постов из LiveData
     // Обращается к PostService.repostHandler за новым состоянием репостов
-    // Изменяет LiveData
+    // Изменяет LiveData.
     override fun repostById(id: Int) {
         var currentPostsSet = data.value ?: return
-        currentPostsSet = currentPostsSet.map{
-            if(it.id != id) it
+        currentPostsSet = currentPostsSet.map {
+            if (it.id != id) it
             else
                 PostService.repostHandler(it.id)
         }
         data.value = currentPostsSet
+    }
 
+    // Получает список постов из LiveData
+    // Передаёт в PostService введённый post, чтобы его добавили в хранилище постов
+    // Обновляет LiveData так, чтобы добавленный пост выводился первым в сппике.
+    override fun save(post: Post) {
+        data.value = if (post.id == 0) {
+            listOf(PostService.addOnePost(post)) + (data.value ?: emptyList())
+        } else {
+            (data.value ?: emptyList()).map {
+                if (it.id == post.id) PostService.update(post) else it
+            }
+        }
+    }
+
+    // Получает список постов из LiveData
+    // Обращается к PostService.removeById, чтобы удалить пост из коллекции
+    // Обновляет LiveData
+    override fun removeById(id: Int) {
+        var currentPostsSet = data.value ?: return
+        PostService.removeById(id)
+        data.value = currentPostsSet.filter { it.id != id }
     }
 }

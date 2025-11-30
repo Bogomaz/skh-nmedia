@@ -9,4 +9,8 @@
     <string name="shares_count">Этим поделились"</string>
     <string name="comments_count">Это прокомментировали</string>
     <string name="views_count">Это посмотрели</string>
+    <string name="edit">Редактировать</string>>
+    <string name="remove">Удалить</string>
+    <string name="new_post_text">Введите текст поста</string>
+    <string name="empty_post_text">Пост не может быть пустым</string>
 </resources>

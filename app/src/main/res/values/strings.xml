@@ -8,5 +8,9 @@
     <string name="comments_count">It commented</string>
     <string name="shares_count">It shared</string>
     <string name="views_count">It viewed</string>
+    <string name="edit">Edit</string>>
+    <string name="remove">Remove</string>
+    <string name="new_post_text">Enter a post text</string>
+    <string name="empty_post_text">The post text is empty</string>
 
 </resources>

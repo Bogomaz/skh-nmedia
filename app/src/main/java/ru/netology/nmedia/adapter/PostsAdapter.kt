@@ -3,6 +3,7 @@ package ru.netology.nmedia.adapter
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,11 +17,19 @@ import ru.netology.nmedia.service.PostService
 
 typealias OnLikeListener = (Post) -> Unit
 typealias OnRepostListener = (Post) -> Unit
+typealias OnRemoveById = (Post) -> Unit
+
+// Интерфейс PostListener содержит все методы, которые позволяют манипулировать постом в ленте
+interface PostListener {
+    fun onEdit(post: Post)
+    fun onRemove(post: Post)
+    fun onLike(post: Post)
+    fun onRepost(post: Post)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 class PostsAdapter(
-    private val onLikeListener: OnLikeListener,
-    private val onRepostListener: OnRepostListener
+    private val listener: PostListener,
 ) : ListAdapter<Post, PostViewHolder>(
     PostDiffUtils
 ) {
@@ -30,7 +39,7 @@ class PostsAdapter(
         viewType: Int
     ): PostViewHolder {
         val view = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(view, onLikeListener, onRepostListener)
+        return PostViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(
@@ -44,8 +53,7 @@ class PostsAdapter(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onLikeListener: OnLikeListener,
-    private val onRepostListener: OnRepostListener
+    private val listener: PostListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -63,11 +71,32 @@ class PostViewHolder(
                 selectImageResource(post.isLiked)
             )
             likes.setOnClickListener {
-                onLikeListener(post)
+                listener.onLike(post)
             }
 
             shares.setOnClickListener {
-                onRepostListener(post)
+                listener.onRepost(post)
+            }
+            menu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.post_menu)
+                    setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.remove -> {
+                                listener.onRemove(post)
+                                true
+                            }
+
+                            R.id.edit -> {
+                                listener.onEdit(post)
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                    show()
+                }
             }
         }
     }
@@ -75,8 +104,8 @@ class PostViewHolder(
     // Определяет, какая иконка будет выводиться.
     fun selectImageResource(isLiked: Boolean): Int {
         return when (isLiked) {
-            true -> R.drawable.cards_heart
-            false -> R.drawable.heart_outline_24
+            true -> R.drawable.ic_like_filled
+            false -> R.drawable.ic_like
         }
     }
 }
