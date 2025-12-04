@@ -114,16 +114,17 @@
         app:layout_constraintEnd_toStartOf="@id/save"
         />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/save"
-        android:src="@drawable/ic_save"
+        style="?attr/materialIconButtonFilledStyle"
         android:padding="@dimen/common_spacing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/common_spacing"
         app:layout_constraintStart_toEndOf="@id/newText"
         app:layout_constraintTop_toBottomOf="@id/editBarrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:icon="@drawable/ic_save"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

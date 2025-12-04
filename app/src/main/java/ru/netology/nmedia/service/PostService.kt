@@ -95,7 +95,7 @@ object PostService {
     fun convertNumberIntoText(number: Int): String {
         return when {
             number >= 1_000_000 -> formatNumberWithSuffix(number / 1_000_000.0, "M")
-            number >= 10_000 -> "${number / 1_000} K"
+            number >= 10_000 -> "${number / 1_000}K"
             number >= 1_000 -> formatNumberWithSuffix(number / 1_000.0, "K")
             else -> number.toString()
         }
@@ -110,9 +110,9 @@ object PostService {
 
         // Убрать .0, если число целое
         return if (formatted.endsWith(".0")) {
-            formatted.dropLast(2) + " $suffix"
+            formatted.dropLast(2) + "$suffix"
         } else {
-            "$formatted $suffix"
+            "$formatted$suffix"
         }
     }
 }

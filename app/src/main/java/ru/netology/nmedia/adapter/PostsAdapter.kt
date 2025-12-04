@@ -63,13 +63,11 @@ class PostViewHolder(
             avatar.setImageResource(R.drawable.avatar)
             published.text = DateTimeService.formatUnixTime(post.date)
             content.text = post.text
-            likesCount.text = PostService.convertNumberIntoText(post.likesCount)
-            viewsCount.text = PostService.convertNumberIntoText(post.viewsCount)
-            commentsCount.text = PostService.convertNumberIntoText(post.commentsCount)
-            sharesCount.text = PostService.convertNumberIntoText(post.repostsCount)
-            likes.setImageResource(
-                selectImageResource(post.isLiked)
-            )
+            likes.isChecked = post.isLiked
+            likes.text = PostService.convertNumberIntoText(post.likesCount)
+            shares.text = PostService.convertNumberIntoText(post.repostsCount)
+            comments.text = PostService.convertNumberIntoText(post.commentsCount)
+            views.text = PostService.convertNumberIntoText(post.viewsCount)
             likes.setOnClickListener {
                 listener.onLike(post)
             }
