@@ -93,7 +93,6 @@
                 style="@style/TextAppearance.Material3.LabelLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="24 ДЕКАБРЯ 19:00"
                 android:textColor="@android:color/white" />
 
             <View

@@ -65,7 +65,14 @@ class PostViewHolder(
             avatar.setImageResource(R.drawable.avatar)
             published.text = DateTimeService.formatUnixTime(post.date)
             content.text = post.text
-            if(post.video != "") video.visibility = View.VISIBLE else video.visibility = View.GONE
+            if (post.videoLink != "") {
+                video.visibility = View.VISIBLE
+                videoDescription.text = post.videoDescription
+                videoDate.text = post.videoDate
+            } else {
+                video.visibility = View.GONE
+            }
+
             likes.isChecked = post.isLiked
             likes.text = PostService.convertNumberIntoText(post.likesCount)
             shares.text = PostService.convertNumberIntoText(post.repostsCount)
@@ -80,9 +87,18 @@ class PostViewHolder(
                 listener.onRepost(post)
             }
 
+            video.setOnClickListener {
+                listener.onPlayVideo(post)
+            }
+
             playButton.setOnClickListener {
                 listener.onPlayVideo(post)
             }
+//
+//            videoDescription.setOnClickListener {
+//                listener.onPlayVideo(post)
+//            }
+
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

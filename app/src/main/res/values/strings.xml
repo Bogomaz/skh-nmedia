@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Nmedia</string>
     <string name="main_text">NMedia!</string>
+    <string name="author_short">Netology!</string>
     <string name="description_post_author_avatar_menu">Post author avatar</string>
     <string name="description_post_menu">Post menu</string>
     <string name="content">Content</string>
@@ -18,5 +19,6 @@
     <string name="edited_post_title">Edit post</string>
     <string name="play">Play</string>
     <string name="invalid_link">Unable to open link</string>
+
 
 </resources>
