@@ -1,59 +1,37 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.fragments
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.launch
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.viewmodel.PostViewModel
-import androidx.activity.viewModels
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.utils.AndroidUtils
+import ru.netology.nmedia.viewmodel.PostViewModel
 
-class MainActivity : AppCompatActivity() {
-
-    val viewModel: PostViewModel by viewModels()
-
-    val postLauncher = registerForActivityResult(PostActivityContract()) { result ->
-        val editingPost = viewModel.edited.value
-        if(editingPost != null && result != null) {
-            val updatedPost = editingPost.copy(text = result)
-            viewModel.save(updatedPost.text)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+class FeedFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentFeedBinding.inflate(layoutInflater, container, false)
+        val viewModel: PostViewModel by viewModels (ownerProducer = ::requireParentFragment)
 
         //Создаём адаптер, передаём ему объект PostListener
         //Переопределяем все методы  так, чтобы в них вызывались функции их вьюшки
         val adapter = PostsAdapter(object : PostListener {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
-                postLauncher.launch(post.text)
             }
 
             override fun onRemove(post: Post) {
@@ -62,11 +40,11 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPlayVideo(post: Post) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
-                try{
+                try {
                     startActivity(intent)
-                }catch(e:Exception){
+                } catch (e: Exception) {
                     Toast.makeText(
-                        this@MainActivity,
+                        requireContext(),
                         getString(R.string.invalid_link),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -89,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent.createChooser(intent, null))
                 } catch (e: Exception) {
                     Toast.makeText(
-                        this@MainActivity,
+                        requireContext(),
                         "Apps not found",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -110,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        viewModel.data.observe(this)
+        viewModel.data.observe(viewLifecycleOwner)
         { posts ->
             adapter.submitList(posts)
         }
@@ -118,8 +96,10 @@ class MainActivity : AppCompatActivity() {
         //Обработчик кнопки Сохранить
         binding.addNewPost.setOnClickListener()
         {
-            postLauncher.launch(null)
+            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+        return binding.root
     }
-}
+    val viewModel: PostViewModel by viewModels()
 
+}

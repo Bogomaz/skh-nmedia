@@ -43,7 +43,7 @@ Post, Record, Comment, Attachment, User и другие, помельче.
 2.1. likeHandler, repostHandler. Они отвечают за изменения полей likes и reposts в объекте post.
 2.2. convertNumberIntoText и formatNumberWithSuffix. Они отвечают за конвертирование числа в строку и форматирование этой строки. 
 
-3. В MainActivity.kt добавлены методы 
+3. В FeedFragment.kt добавлены методы 
 3.1. formatUnixTime - конвертирует дату из Int unixtime и форматирует её
 3.2. selectImageResource - выбирает правильную иконку для like 
 
