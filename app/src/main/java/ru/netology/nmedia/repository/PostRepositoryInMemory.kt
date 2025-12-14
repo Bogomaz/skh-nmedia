@@ -1,165 +1,96 @@
 package ru.netology.nmedia.repository
 
+import android.content.Context
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.service.PostService
+import java.lang.reflect.Type
+import kotlin.inc
 
 
-class PostRepositoryInMemory : PostRepository {
-    // пользователь-заглушка
-    val userId = 1
+class PostRepositoryInMemory(
+    context: Context
+) : PostRepository {
 
-    // набор постов-заглушек
-    private val posts = PostService.addPostList(
-        listOf(
-            Post(
-                date = 1758622320, //"23 сентября в 10:12"
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Освоение новой профессии — это не только открывающиеся возможности и перспективы, но и настоящий вызов самому себе. Приходится выходить из зоны комфорта и перестраивать привычный образ жизни: менять распорядок дня, искать время для занятий, быть готовым к возможным неудачам в начале пути. В блоге рассказали, как избежать стресса на курсах профпереподготовки → http://netolo.gy/fPD",
-                videoLink = "https://rutube.ru/video/8ec3bce92ea95b3340af7511e533cbc0/?r=plwd",
-                videoDescription = "Иллюстрация в медиа",
-                videoDate = "12 ДЕКАБРЯ 2025",
-                commentsCount = 94,
-                likesCount = 90,
-                viewsCount = 362,
-                repostsCount = 1
-            ),
-            Post(
-                date = 1758552328, //"22 сентября в 14:45",
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Делиться впечатлениями о любимых фильмах легко, а что если рассказать так, чтобы все заскучали",
-                commentsCount = 944,
-                likesCount = 80,
-            ),
-            Post(
-                date = 1758535920, // "22 сентября в 10:12",
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Таймбоксинг — отличный способ навести порядок в своём календаре и разобраться с делами, которые долго откладывали на потом. Его главный принцип — на каждое дело заранее выделяется определённый отрезок времени. В это время вы работаете только над одной задачей, не переключаясь на другие. Собрали советы, которые помогут внедрить таймбоксинг \uD83D\uDC47\uD83C\uDFFB",
-                videoLink = "https://rutube.ru/video/8ec3bce92ea95b3340af7511e533cbc0/?r=plwd",
-                videoDescription = "Иллюстрация в медиа",
-                videoDate = "10 ДЕКАБРЯ 2025",
-                commentsCount = 944,
-                likesCount = 70,
-                viewsCount = 52100,
-                repostsCount = 54
-            ),
-            Post(
-                date = 1758449520, //"21 сентября в 10:12"
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "24 сентября стартует новый поток бесплатного курса «Диджитал-старт: первый шаг к востребованной профессии» — за две недели вы попробуете себя в разных профессиях и определите, что подходит именно вам → http://netolo.gy/fQ",
-                videoLink = "https://rutube.ru/video/8ec3bce92ea95b3340af7511e533cbc0/?r=plwd",
-                videoDescription = "Иллюстрация в медиа",
-                videoDate = "01 ДЕКАБРЯ 2025",
-                commentsCount = 41,
-                likesCount = 60,
-                viewsCount = 365,
-                repostsCount = 540
-            ),
-            Post(
-                date = 1758363240, // 20 сентября в 10:14,
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Диджитал давно стал частью нашей жизни: мы общаемся в социальных сетях и мессенджерах, заказываем еду, такси и оплачиваем счета через приложения.",
-                commentsCount = 25,
-                likesCount = 50,
-                viewsCount = 996,
-                repostsCount = 54
-            ),
-            Post(
-                date = 1758291120, // 19 сентября в 14:12,
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Большая афиша мероприятий осени: конференции, выставки и хакатоны для жителей Москвы, Ульяновска и Новосибирска",
-                commentsCount = 28,
-                likesCount = 40,
-                viewsCount = 3102000,
-                repostsCount = 2500
-            ),
-            Post(
-                date = 1758277440, // 19 сентября в 10:24",
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Языков программирования много, и выбрать какой-то один бывает нелегко. Собрали подборку статей, которая поможет вам начать, если вы остановили свой выбор на JavaScript.",
-                commentsCount = 4,
-                likesCount = 30,
-                viewsCount = 1102,
-                repostsCount = 800
-            ),
-            Post(
-                date = 1758190320, // 18 сентября в 10:12",
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Знаний хватит на всех: на следующей неделе разбираемся с разработкой мобильных приложений, учимся рассказывать истории и составлять PR-стратегию прямо на бесплатных занятиях",
-                videoLink = "https://rutube.ru/video/8ec3bce92ea95b3340af7511e533cbc0/?r=plwd",
-                videoDescription = "Иллюстрация в медиа",
-                videoDate = "28 НОЯБРЯ 2025",
-                commentsCount = 4,
-                likesCount = 20,
-                viewsCount = 41,
-                repostsCount = 6
-            ),
-            Post(
-                date = 1747841760, //"21 мая в 18:36"
-                author = "Нетология. Университет интернет-профессий будущего",
-                text = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
-                videoLink = "invalid_link",
-                videoDescription = "Иллюстрация в медиа",
-                videoDate = "18 НОЯБРЯ 2025",
-                commentsCount = 12,
-                likesCount = 10,
-                viewsCount = 30,
-                repostsCount = 1
-            ),
-        )
-    )
+    // создаётся хранилище простых данных data.
+    // оно доступно через prefs
+    private val prefs = context.getSharedPreferences("data", Context.MODE_PRIVATE)
 
-    // Готовим данные для LiveData (пока они берутся из заглушки)
-    private val data = MutableLiveData(posts)
-    override fun getAll(): LiveData<List<Post>> = data
-
-    // Принимает идентификатор лайкнутого поста.
-    // Берёт свежий список постов из LiveData
-    // Обращается к PostService.likeHandler за новым состоянием лайков
-    // Изменяет LiveData
-    override fun likeById(id: Int) {
-        var currentPostsSet = data.value ?: return
-        currentPostsSet = currentPostsSet.map {
-            if (it.id != id) it
-            else
-                PostService.likeHandler(it.id)
+    //Загружаем в список данные из shared pref.
+    //Сеттер обновляет shared pref и live data
+    private var posts: List<Post> = getPosts()
+        set(value) {
+            field = value
+            sync() // обновляем shared pref
+            postsLive.value = value // обновляем live data
         }
-        data.value = currentPostsSet
-    }
 
-    // Получает список постов из LiveData
-    // Обращается к PostService.repostHandler за новым состоянием репостов
-    // Изменяет LiveData.
-    override fun repostById(id: Int) {
-        var currentPostsSet = data.value ?: return
-        currentPostsSet = currentPostsSet.map {
-            if (it.id != id) it
-            else
-                PostService.repostHandler(it.id)
-        }
-        data.value = currentPostsSet
-    }
+    // Загружаем в live data список постов
+    private val postsLive = MutableLiveData(posts)
 
-    // Получает список постов из LiveData
-    // Передаёт в PostService введённый post, чтобы его добавили в хранилище постов
-    // Обновляет LiveData так, чтобы добавленный пост выводился первым в сппике.
+    override fun getAll(): LiveData<List<Post>> = postsLive
+
+    // Создаёт новый пост, добавляет его в live data, вызывает обновление shared pref.
     override fun save(post: Post) {
-        data.value = if (post.id == 0) {
-            listOf(PostService.addOnePost(post)) + (data.value ?: emptyList())
+        posts = if (post.id == 0) {
+            val currentId = posts.maxOfOrNull { it.id } ?: 0
+            val newPost = PostService.createPost(post, currentId)
+            listOf(newPost) + posts
         } else {
-            (data.value ?: emptyList()).map {
-                if (it.id == post.id) PostService.update(post) else it
+            posts.map {
+                if (it.id == post.id) post else it
             }
         }
     }
 
-    // Получает список постов из LiveData
-    // Обращается к PostService.removeById, чтобы удалить пост из коллекции
-    // Обновляет LiveData
+    // Принимает идентификатор поста. Берёт свежий список постов из LiveData
+    // Обращается к PostService.likeHandler за новым состоянием лайков
+    // Изменяет LiveData
+    override fun likeById(id: Int) {
+        posts = posts.map{
+            if(it.id != id) it
+            else
+                PostService.likeHandler(it)
+        }
+    }
+
+    // Принимает идентификатор поста.  Берёт свежий список постов из LiveData
+    // Обращается к PostService.repostHandler за новым состоянием репостов
+    // Изменяет LiveData.
+    override fun repostById(id: Int) {
+        posts = posts.map {
+            if (it.id != id) it
+            else
+                PostService.repostHandler(it)
+        }
+    }
+
+    // Удаляет пост из live data и вызывает обновление shared pref.
     override fun removeById(id: Int) {
-        var currentPostsSet = data.value ?: return
-        PostService.removeById(id)
-        data.value = currentPostsSet.filter { it.id != id }
+        posts = posts.filter { it.id != id }
+    }
+
+    // Чтение данных из shared preferences
+    private fun getPosts(): List<Post> = prefs.getString(POSTS_KEY, null)?.let {
+        gson.fromJson(it, postsType)
+    } ?: emptyList()
+
+    // запись в shared preferences изменённого списка постов
+    private fun sync() {
+        prefs.edit {
+            putString(POSTS_KEY, gson.toJson(posts))
+        }
+    }
+
+    // Константы
+    private companion object {
+        const val POSTS_KEY = "posts" // ключ сохранения/ получения данных из shared preferences
+        val gson = Gson() // Gson-объект
+        val postsType: Type =
+            object : TypeToken<List<Post>>() {}.type // тип объекта - список постов
     }
 }

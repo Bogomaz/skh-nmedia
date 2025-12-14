@@ -94,11 +94,6 @@ class PostViewHolder(
             playButton.setOnClickListener {
                 listener.onPlayVideo(post)
             }
-//
-//            videoDescription.setOnClickListener {
-//                listener.onPlayVideo(post)
-//            }
-
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
