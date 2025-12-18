@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.databinding.ActivityAppBinding
+import ru.netology.nmedia.utils.postText
 
 class AppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,20 +28,23 @@ class AppActivity : AppCompatActivity() {
         }
 
         val action = intent.action
-        if(action == Intent.ACTION_SEND){
+
+        if (action == Intent.ACTION_SEND) {
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-            if(text.isNullOrEmpty()){
+            if (text.isNullOrEmpty()) {
                 Snackbar.make(binding.root, R.string.blank_text_error, Snackbar.LENGTH_SHORT)
-                    .setAction(android.R.string.ok){
-                        finish()
-                    }
+                    .setAction(android.R.string.ok) { finish() }
                     .show()
-            }else{
-                Log.d("IntentHandlerActivity", text)
+            } else {
+                val bundle = Bundle().apply { postText = text }
+
+                val navHostFragment = supportFragmentManager
+                    .findFragmentById(R.id.nav_controller) as NavHostFragment
+
+                val navController = navHostFragment.navController
+
+                navController.navigate(R.id.action_feedFragment_to_editPostFragment, bundle)
             }
-            binding.navController.getFragment<NavHostFragment>().navController.navigate(
-                R.id.action_feedFragment_to_editPostFragment,
-            )
         }
     }
 }

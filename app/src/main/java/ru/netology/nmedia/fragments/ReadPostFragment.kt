@@ -2,11 +2,13 @@
 
 package ru.netology.nmedia.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
@@ -14,8 +16,11 @@ import ru.netology.nmedia.databinding.FragmentReadPostBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.service.DateTimeService
 import ru.netology.nmedia.service.PostService
+import ru.netology.nmedia.utils.openVideo
 import ru.netology.nmedia.viewmodel.PostViewModel
 import kotlin.getValue
+import ru.netology.nmedia.utils.postText
+import ru.netology.nmedia.utils.postId
 
 class ReadPostFragment() : Fragment() {
 
@@ -27,8 +32,7 @@ class ReadPostFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        postId = requireArguments().getParcelable<Post>(ARG_POST)?.id
-            ?: error("Произошла непредвиденная ситуация.")
+        postId = requireArguments().postId
     }
 
     override fun onCreateView(
@@ -42,7 +46,7 @@ class ReadPostFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // меню и обработчики событий
+        // шапка, меню и обработчики кнопок
         binding.apply {
             //Кебаб-меню
             topAppBar.inflateMenu(R.menu.post_menu)
@@ -50,17 +54,16 @@ class ReadPostFragment() : Fragment() {
                 currentPost?.let { post ->
                     when (menuItem.itemId) {
                         R.id.remove -> {
-                            viewModel.removeById(postId)
-                            findNavController().navigateUp()
+                            viewModel.removeById(postId)    // удалить выбранный пост
+                            findNavController().navigateUp() // вернуться на тот фрагмент, с которого пришли.
                             true
                         }
+
                         R.id.edit -> {
                             viewModel.edit(post)
-                              findNavController().navigate(
+                            findNavController().navigate(
                                 R.id.action_readPostFragment_to_EditPostFragment,
-                                Bundle().apply {
-                                    putString("postText", post.text)
-                                }
+                                Bundle().apply { postText = post.text }
                             )
                             true
                         }
@@ -72,6 +75,7 @@ class ReadPostFragment() : Fragment() {
 
             // Кнопка Назад
             topAppBar.setNavigationIcon(R.drawable.ic_close_editing)
+            topAppBar.setTitle(R.string.reading_post_title)
             topAppBar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
@@ -79,12 +83,37 @@ class ReadPostFragment() : Fragment() {
             likes.setOnClickListener {
                 viewModel.likeById(postId)
             }
+
             shares.setOnClickListener {
                 viewModel.repostById(postId)
+
+                // Когда нужно поделиться данными с другими приложениями через intent
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_TEXT, currentPost?.text)
+                    type = "text/plain"
+                }
+
+                try {
+                    startActivity(Intent.createChooser(intent, null))
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Apps not found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            playButton.setOnClickListener {
+                requireContext().openVideo(currentPost?.videoLink)
+            }
+
+            video.setOnClickListener {
+                requireContext().openVideo(currentPost?.videoLink)
             }
         }
 
-        // Обновление данных
+        // Обновление данных при изменении данных поста.
         viewModel.data.observe(viewLifecycleOwner) { posts ->
             val post = posts.find { it.id == postId } ?: return@observe
             currentPost = post
@@ -113,19 +142,5 @@ class ReadPostFragment() : Fragment() {
         super.onDestroyView()
         _binding = null // очистить binding в конце жизни фрагмента
         currentPost = null
-    }
-
-    companion object {
-        private const val ARG_POST = "post"
-        fun newInstance(
-            post: Post
-        ): ReadPostFragment {
-
-            return ReadPostFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_POST, post)
-                }
-            }
-        }
     }
 }

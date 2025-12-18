@@ -17,6 +17,7 @@
     <string name="blank_text_error">Text is blank</string>
     <string name="created_post_title">Create post</string>
     <string name="edited_post_title">Edit post</string>
+    <string name="reading_post_title">Reading post</string>
     <string name="play">Play</string>
     <string name="invalid_link">Unable to open link</string>
     <string name="save_post">Save</string>

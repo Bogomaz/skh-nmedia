@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
-import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.utils.postText
 
 class EditPostFragment : Fragment() {
 
@@ -32,27 +31,18 @@ class EditPostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        Здесь получение данных происходит через viewModel
-//        val postsText = viewModel.edited.value?.text.orEmpty()
-//        if (postsText.isNotBlank()) {
-//            binding.newText.setText(postsText)
-//            binding.topAppBar.title = getString(R.string.edited_post_title)
-//            AndroidUtils.showKeyboard(binding.newText)
-//        } else {
-//            binding.topAppBar.title = getString(R.string.created_post_title)
-//        }
+        val postText = arguments?.postText.orEmpty()
+        val isEdit = postText.isNotBlank()
 
-        val args = EditPostFragmentArgs.fromBundle(requireArguments())
-        val postText = args.postText
 
-        if (postText.isNotBlank()) {
+        if (isEdit) {
             binding.newText.setText(postText)
-            binding.topAppBar.title = getString(R.string.edited_post_title)
             AndroidUtils.showKeyboard(binding.newText)
-        } else {
-            binding.topAppBar.title = getString(R.string.created_post_title)
         }
 
+        binding.topAppBar.title = getString(
+            if (isEdit) R.string.edited_post_title else R.string.edited_post_title
+        )
 
         binding.savePost.setOnClickListener {
             val text = binding.newText.text?.toString().orEmpty()
@@ -72,18 +62,4 @@ class EditPostFragment : Fragment() {
         _binding = null // очистить binding в конце жизни фрагмента
     }
 
-    companion object {
-        private const val ARG_POST_TEXT = "postText"
-
-        fun newInstance(
-            postText: String
-        ): EditPostFragment {
-
-            return EditPostFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_POST_TEXT, postText)
-                }
-            }
-        }
-    }
 }

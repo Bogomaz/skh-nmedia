@@ -19,6 +19,10 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import ru.netology.nmedia.interfaces.PostListener
+import ru.netology.nmedia.utils.openVideo
+
+import ru.netology.nmedia.utils.postText
+import ru.netology.nmedia.utils.postId
 
 
 class FeedFragment : Fragment() {
@@ -26,6 +30,7 @@ class FeedFragment : Fragment() {
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PostViewModel by activityViewModels()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -43,11 +48,11 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(object : PostListener {
 
-            // Этот метод передаёт данные через bundle
+            // Этот метод передаёт данные через bundle с помощью делегата
             override fun onViewPost(post: Post) {
-                val bundle = Bundle().apply {
-                    putParcelable("post", post) // ← ключ "post", сам объект!
-                }
+                //val bundle = Bundle().apply { post = selectedPost }
+                val bundle = Bundle().apply{postId = post.id}
+
                 findNavController().navigate(
                     R.id.action_feedFragment_to_readPostFragment,
                     bundle
@@ -55,13 +60,13 @@ class FeedFragment : Fragment() {
             }
 
 
-            // Этот метод передаёт данные на форму редактирования через safe args
+            // Этот метод передаёт данные на форму редактирования через bundle
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
-                val action = FeedFragmentDirections
-                    .actionFeedFragmentToEditPostFragment()
-                    .setPostText(post.text)
-                findNavController().navigate(action)
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_editPostFragment,
+                    Bundle().apply { postText = post.text}
+                )
             }
 
             override fun onRemove(post: Post) {
@@ -69,16 +74,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onPlayVideo(post: Post) {
-                val intent = Intent(Intent.ACTION_VIEW, post.videoLink.toUri())
-                try {
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.invalid_link),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                requireContext().openVideo(post.videoLink)
             }
 
             override fun onLike(post: Post) {
@@ -126,13 +122,13 @@ class FeedFragment : Fragment() {
         //Обработчик кнопки "Создать пост"
         binding.addNewPost.setOnClickListener()
         {
-            val action = FeedFragmentDirections.actionFeedFragmentToEditPostFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_feedFragment_to_editPostFragment)
+            Bundle().apply { postText = "" }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

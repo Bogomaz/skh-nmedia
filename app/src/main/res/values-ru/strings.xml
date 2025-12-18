@@ -18,8 +18,9 @@
     <string name="blank_text_error">Текст отсутствует!</string>
     <string name="created_post_title">Создание поста</string>
     <string name="edited_post_title">Редактирование поста</string>
+    <string name="reading_post_title">Просмотр поста</string>
     <string name="play">Смотреть</string>
-    <string name="invalid_link">Невозможно открыть ссылку</string>
+    <string name="invalid_link">Невозможно перейти по ссылке</string>
     <string name="save_post">Сохранить</string>
     <string name="cancel_button">Отмена</string>
 </resources>
