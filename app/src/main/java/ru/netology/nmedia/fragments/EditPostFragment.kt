@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
 import ru.netology.nmedia.utils.AndroidUtils
@@ -14,7 +15,8 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.utils.postText
 
 class EditPostFragment : Fragment() {
-
+    private val args: EditPostFragmentArgs by navArgs()
+    private val postText: String by lazy { args.postText }
     private var _binding: FragmentEditPostBinding? = null // Nullable-ссылка на binding
     private val binding get() = _binding!! // кастомный геттер, который точно возвращает не null
     private val viewModel: PostViewModel by activityViewModels()

@@ -48,25 +48,20 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(object : PostListener {
 
-            // Этот метод передаёт данные через bundle с помощью делегата
+            // Этот метод передаёт данные через safe args
             override fun onViewPost(post: Post) {
-                //val bundle = Bundle().apply { post = selectedPost }
-                val bundle = Bundle().apply{postId = post.id}
-
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_readPostFragment,
-                    bundle
-                )
+                val action = FeedFragmentDirections
+                    .actionFeedFragmentToReadPostFragment(post.id)
+                findNavController().navigate(action)
             }
 
-
-            // Этот метод передаёт данные на форму редактирования через bundle
+            // Этот метод передаёт данные через safe args
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_editPostFragment,
-                    Bundle().apply { postText = post.text}
-                )
+
+                val action = FeedFragmentDirections
+                    .actionFeedFragmentToEditPostFragment(post.text)
+                findNavController().navigate(action)
             }
 
             override fun onRemove(post: Post) {

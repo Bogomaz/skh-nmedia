@@ -10,6 +10,9 @@
         android:name="ru.netology.nmedia.fragments.FeedFragment"
         android:label="fragment_feed"
         tools:layout="@layout/fragment_feed">
+        <argument
+            android:name="postId"
+            app:argType="integer" />
         <action
             android:id="@+id/action_feedFragment_to_editPostFragment"
             app:destination="@id/editPostFragment"/>
@@ -17,21 +20,31 @@
             android:id="@+id/action_feedFragment_to_readPostFragment"
             app:destination="@id/readPostFragment"/>
     </fragment>
+
     <fragment
         android:id="@+id/editPostFragment"
         android:name="ru.netology.nmedia.fragments.EditPostFragment"
         android:label="fragment_new_post"
-        tools:layout="@layout/fragment_edit_post"/>
+        tools:layout="@layout/fragment_edit_post">
+        <argument
+            android:name="postText"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/readPostFragment"
         android:name="ru.netology.nmedia.fragments.ReadPostFragment"
         android:label="fragment_read_post"
         tools:layout="@layout/fragment_read_post">
+        <argument
+            android:name="postId"
+            app:argType="integer" />
         <action
             android:id="@+id/action_readPostFragment_to_feedFragment"
             app:destination="@id/feedFragment"/>
         <action
             android:id="@+id/action_readPostFragment_to_EditPostFragment"
-            app:destination="@id/editPostFragment"/>
+            app:destination="@id/editPostFragment">
+        </action>
     </fragment>
 </navigation>

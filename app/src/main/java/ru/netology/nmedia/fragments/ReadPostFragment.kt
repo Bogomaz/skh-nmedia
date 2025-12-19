@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentReadPostBinding
 import ru.netology.nmedia.model.Post
@@ -25,22 +26,19 @@ import ru.netology.nmedia.utils.postText
 import ru.netology.nmedia.utils.postId
 
 class ReadPostFragment() : Fragment() {
+    private val args: ReadPostFragmentArgs by navArgs()
+    private val postId: Int by lazy {args.postId}
 
-    private var postId: Int = 0
     private var currentPost: Post? = null
     private var _binding: FragmentReadPostBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PostViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        postId = requireArguments().postId
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentReadPostBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -63,10 +61,9 @@ class ReadPostFragment() : Fragment() {
 
                         R.id.edit -> {
                             viewModel.edit(post)
-                            findNavController().navigate(
-                                R.id.action_readPostFragment_to_EditPostFragment,
-                                Bundle().apply { postText = post.text }
-                            )
+                            val action = ReadPostFragmentDirections
+                                .actionReadPostFragmentToEditPostFragment(post.text)
+                            findNavController().navigate(action)
                             true
                         }
 
