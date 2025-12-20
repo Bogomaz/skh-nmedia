@@ -17,6 +17,7 @@
     <string name="empty_post_text">Пост не может быть пустым</string>
     <string name="blank_text_error">Текст отсутствует!</string>
     <string name="created_post_title">Создание поста</string>
+    <string name="reposted_post_title">Репост</string>
     <string name="edited_post_title">Редактирование поста</string>
     <string name="reading_post_title">Просмотр поста</string>
     <string name="play">Смотреть</string>

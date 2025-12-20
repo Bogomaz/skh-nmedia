@@ -9,11 +9,13 @@ var Bundle.post by BundlePostArgs(BundleKeys.ARG_POST)
 var Bundle.postText by BundleStringArg(BundleKeys.ARG_POST_TEXT)
 var Bundle.postId by BundleIntArg(BundleKeys.ARG_POST_ID)
 
+var Bundle.editMode by BundleStringArg(BundleKeys.ARG_EDIT_TYPE)
 // Объект для хранения ключей. На случай, если придётся передавать что-то ещё кроме текста поста.
 object BundleKeys {
     const val ARG_POST_TEXT = "postText" // для хранения текста поста
     const val ARG_POST = "post" // для самого поста
     const val ARG_POST_ID = "postId" // для идентификатора поста
+    const val ARG_EDIT_TYPE = "editType"
 }
 
 /**

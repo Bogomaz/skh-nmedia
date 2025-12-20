@@ -1,12 +1,10 @@
 package ru.netology.nmedia.fragments
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -16,9 +14,10 @@ import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
-import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import ru.netology.nmedia.interfaces.PostListener
+import ru.netology.nmedia.model.EditMode
+import ru.netology.nmedia.utils.editMode
 import ru.netology.nmedia.utils.openVideo
 
 import ru.netology.nmedia.utils.postText
@@ -51,7 +50,7 @@ class FeedFragment : Fragment() {
             // Этот метод передаёт данные через bundle с помощью делегата
             override fun onViewPost(post: Post) {
                 //val bundle = Bundle().apply { post = selectedPost }
-                val bundle = Bundle().apply{postId = post.id}
+                val bundle = Bundle().apply { postId = post.id }
 
                 findNavController().navigate(
                     R.id.action_feedFragment_to_readPostFragment,
@@ -65,7 +64,10 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
                 findNavController().navigate(
                     R.id.action_feedFragment_to_editPostFragment,
-                    Bundle().apply { postText = post.text}
+                    Bundle().apply {
+                        postId = post.id
+                        editMode = EditMode.EDIT.name
+                    }
                 )
             }
 
@@ -82,22 +84,15 @@ class FeedFragment : Fragment() {
             }
 
             override fun onRepost(post: Post) {
-                viewModel.repostById(post.id)
 
                 // Когда нужно поделиться данными с другими приложениями через intent
-                val intent = Intent()
-                    .putExtra(Intent.EXTRA_TEXT, post.text)
-                    .setAction(Intent.ACTION_SEND)
-                    .setType("text/plain")
-                try {
-                    startActivity(Intent.createChooser(intent, null))
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Apps not found",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_editPostFragment,
+                    Bundle().apply {
+                        postId = post.id
+                        editMode = EditMode.REPOST.name
+                    }
+                )
             }
         })
         binding.postList.adapter = adapter // созданный адаптер помещаем в Recycler View с постами
@@ -122,8 +117,13 @@ class FeedFragment : Fragment() {
         //Обработчик кнопки "Создать пост"
         binding.addNewPost.setOnClickListener()
         {
-            findNavController().navigate(R.id.action_feedFragment_to_editPostFragment)
-            Bundle().apply { postText = "" }
+            findNavController().navigate(
+                R.id.action_feedFragment_to_editPostFragment,
+                Bundle().apply {
+                    postId = 0
+                    editMode = EditMode.CREATE.name
+                }
+            )
         }
     }
 

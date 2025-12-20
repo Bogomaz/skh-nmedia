@@ -11,7 +11,7 @@ interface PostRepository  {
 
     fun likeById(id: Int)
 
-    fun repostById(id: Int)
+    fun repost(parentId: Int, text: String)
 
 
 }

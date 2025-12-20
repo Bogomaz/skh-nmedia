@@ -14,10 +14,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentReadPostBinding
+import ru.netology.nmedia.model.EditMode
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.service.DateTimeService
 import ru.netology.nmedia.service.DateTimeService.formatUnixTime
 import ru.netology.nmedia.service.PostService
+import ru.netology.nmedia.utils.editMode
 import ru.netology.nmedia.utils.openVideo
 import ru.netology.nmedia.viewmodel.PostViewModel
 import kotlin.getValue
@@ -65,11 +67,13 @@ class ReadPostFragment() : Fragment() {
                             viewModel.edit(post)
                             findNavController().navigate(
                                 R.id.action_readPostFragment_to_EditPostFragment,
-                                Bundle().apply { postText = post.text }
+                                Bundle().apply {
+                                    postId = post.id
+                                    editMode = EditMode.EDIT.name
+                                }
                             )
                             true
                         }
-
                         else -> false
                     }
                 } ?: false
@@ -87,23 +91,29 @@ class ReadPostFragment() : Fragment() {
             }
 
             shares.setOnClickListener {
-                viewModel.repostById(postId)
+                findNavController().navigate(
+                    R.id.action_readPostFragment_to_EditPostFragment,
+                    Bundle().apply {
+                        this.postId = this@ReadPostFragment.postId
+                        editMode = EditMode.REPOST.name
+                    }
+                )
 
-                // Когда нужно поделиться данными с другими приложениями через intent
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_TEXT, currentPost?.text)
-                    type = "text/plain"
-                }
-
-                try {
-                    startActivity(Intent.createChooser(intent, null))
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Apps not found",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                ///TODO: Сделать для этого действия отдельную кнопку. Репост внутри приложения и шаринг - это разные вещи
+//                val intent = Intent(Intent.ACTION_SEND).apply {
+//                    putExtra(Intent.EXTRA_TEXT, currentPost?.text)
+//                    type = "text/plain"
+//                }
+//
+//                try {
+//                    startActivity(Intent.createChooser(intent, null))
+//                } catch (e: Exception) {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Apps not found",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
             }
 
             playButton.setOnClickListener {

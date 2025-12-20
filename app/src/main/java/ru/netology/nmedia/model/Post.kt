@@ -5,6 +5,7 @@ import android.os.Parcelable
 @Parcelize
 data class Post(
     val id: Int = 0,
+    val parentId: Int? = null,
     val date: Int = 0,
     val author: String = "",
     val text: String = "",
