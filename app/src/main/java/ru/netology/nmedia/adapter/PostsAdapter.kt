@@ -1,11 +1,9 @@
 package ru.netology.nmedia.adapter
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +14,6 @@ import ru.netology.nmedia.service.DateTimeService
 import ru.netology.nmedia.service.PostService
 import ru.netology.nmedia.interfaces.PostListener
 
-@RequiresApi(Build.VERSION_CODES.O)
 class PostsAdapter(
     private val listener: PostListener,
 ) : ListAdapter<Post, PostViewHolder>(
@@ -45,7 +42,6 @@ class PostViewHolder(
     private val listener: PostListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author

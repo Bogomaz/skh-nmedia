@@ -1,5 +1,3 @@
-@file:JvmName("EditPostFragmentKt")
-
 package ru.netology.nmedia.fragments
 
 import android.os.Build
@@ -128,12 +126,7 @@ class ReadPostFragment() : Fragment() {
             binding.apply {
                 author.text = post.author
                 avatar.setImageResource(R.drawable.avatar)
-
-                published.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    formatUnixTime(post.date)
-                } else {
-                    post.date.toString()
-                }
+                published.text = formatUnixTime(post.date)
 
                 content.text = post.text
                 if (post.videoLink.isNotEmpty()) {
