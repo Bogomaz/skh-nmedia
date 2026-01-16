@@ -1,6 +1,5 @@
 package ru.netology.nmedia.fragments
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +12,7 @@ import ru.netology.nmedia.databinding.FragmentReadPostBinding
 import ru.netology.nmedia.model.EditMode
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.service.DateTimeService.formatUnixTime
-import ru.netology.nmedia.service.PostService
+import ru.netology.nmedia.service.ConvertNumberService
 import ru.netology.nmedia.utils.editMode
 import ru.netology.nmedia.utils.openVideo
 import ru.netology.nmedia.viewmodel.PostViewModel
@@ -68,6 +67,7 @@ class ReadPostFragment() : Fragment() {
                             )
                             true
                         }
+
                         else -> false
                     }
                 } ?: false
@@ -93,7 +93,7 @@ class ReadPostFragment() : Fragment() {
                     }
                 )
 
-                ///TODO: Сделать для этого действия отдельную кнопку. Репост внутри приложения и шаринг - это разные вещи
+                ///TODO: Для шаринга сделать отдельную кнопку. Репост внутри приложения и шаринг - это разные вещи
 //                val intent = Intent(Intent.ACTION_SEND).apply {
 //                    putExtra(Intent.EXTRA_TEXT, currentPost?.text)
 //                    type = "text/plain"
@@ -137,10 +137,10 @@ class ReadPostFragment() : Fragment() {
                     video.visibility = View.GONE
                 }
                 likes.isChecked = post.isLiked
-                likes.text = PostService.convertNumberIntoText(post.likesCount)
-                repost.text = PostService.convertNumberIntoText(post.repostsCount)
-                comments.text = PostService.convertNumberIntoText(post.commentsCount)
-                views.text = PostService.convertNumberIntoText(post.viewsCount)
+                likes.text = ConvertNumberService.convertNumberIntoText(post.likesCount)
+                repost.text = ConvertNumberService.convertNumberIntoText(post.repostsCount)
+                comments.text = ConvertNumberService.convertNumberIntoText(post.commentsCount)
+                views.text = ConvertNumberService.convertNumberIntoText(post.viewsCount)
             }
         }
     }

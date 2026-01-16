@@ -11,7 +11,7 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.service.DateTimeService
-import ru.netology.nmedia.service.PostService
+import ru.netology.nmedia.service.ConvertNumberService
 import ru.netology.nmedia.interfaces.PostListener
 
 class PostsAdapter(
@@ -57,10 +57,10 @@ class PostViewHolder(
             }
 
             likes.isChecked = post.isLiked
-            likes.text = PostService.convertNumberIntoText(post.likesCount)
-            repost.text = PostService.convertNumberIntoText(post.repostsCount)
-            comments.text = PostService.convertNumberIntoText(post.commentsCount)
-            views.text = PostService.convertNumberIntoText(post.viewsCount)
+            likes.text = ConvertNumberService.convertNumberIntoText(post.likesCount)
+            repost.text = ConvertNumberService.convertNumberIntoText(post.repostsCount)
+            comments.text = ConvertNumberService.convertNumberIntoText(post.commentsCount)
+            views.text = ConvertNumberService.convertNumberIntoText(post.viewsCount)
 
             content.setOnClickListener {
                 listener.onViewPost(post)

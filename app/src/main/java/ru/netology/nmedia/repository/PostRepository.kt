@@ -13,5 +13,4 @@ interface PostRepository  {
 
     fun repost(parentId: Int, text: String)
 
-
 }
