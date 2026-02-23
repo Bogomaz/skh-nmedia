@@ -24,6 +24,9 @@
     <string name="invalid_link">Unable to open link</string>
     <string name="save_post">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="notification_user_liked">You get new like!</string>
+    <string name="channel_remote_name">Server notifications</string>
+    <string name="channel_remote_description">Notifications from remote server</string>
 
 
 </resources>

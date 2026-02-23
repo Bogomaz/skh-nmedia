@@ -1,9 +1,13 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safe.args)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.google.services)
     id("kotlin-parcelize")
+
 }
 
 android {
@@ -41,13 +45,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
-    kotlin {
-        jvmToolchain(17)
+
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(platform(libs.firebase))
+    implementation("com.google.firebase:firebase-messaging-ktx:24.1.2") // из BOM он не подтягивается. я в отчаянии.
+//    implementation(libs.firebase.messaging)
+
+    implementation(libs.play.services)
+    implementation(libs.converter.gson)
+
+    coreLibraryDesugaring(libs.desugaring)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -68,5 +83,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }

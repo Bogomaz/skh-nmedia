@@ -24,4 +24,7 @@
     <string name="invalid_link">Невозможно перейти по ссылке</string>
     <string name="save_post">Сохранить</string>
     <string name="cancel_button">Отмена</string>
+    <string name="notification_user_liked">Вам поставили лайк!</string>
+    <string name="channel_remote_name">Серверное уведомление</string>
+    <string name="channel_remote_description">Уведомление от сервера.</string>
 </resources>
